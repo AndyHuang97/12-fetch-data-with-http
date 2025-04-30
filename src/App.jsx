@@ -41,7 +41,7 @@ function App() {
       // can be moved above the state update (rendering) but would need a spinner
       await updateUserPlaces([selectedPlace, ...userPlaces]);
     } catch (error) {
-      // in case of error, revert optimistic update
+      // in case of error, revert optimisticx update
       setUserPlaces(userPlaces);
       setErrorUpdatingPlaces({
         message: error.message || "Failed to update places",
@@ -49,13 +49,29 @@ function App() {
     }
   }
 
-  const handleRemovePlace = useCallback(async function handleRemovePlace() {
-    setUserPlaces((prevPickedPlaces) =>
-      prevPickedPlaces.filter((place) => place.id !== selectedPlace.current.id)
-    );
+  const handleRemovePlace = useCallback(
+    async function handleRemovePlace() {
+      setUserPlaces((prevPickedPlaces) =>
+        prevPickedPlaces.filter(
+          (place) => place.id !== selectedPlace.current.id
+        )
+      );
 
-    setModalIsOpen(false);
-  }, []);
+      try {
+        await updateUserPlaces(
+          userPlaces.filter((place) => place.id !== selectedPlace.current.id)
+        );
+      } catch (error) {
+        setUserPlaces(userPlaces);
+        setErrorUpdatingPlaces({
+          message: error.message || "Failed to update places",
+        });
+      }
+
+      setModalIsOpen(false);
+    },
+    [userPlaces]
+  );
 
   function handleError() {
     setErrorUpdatingPlaces(null);
@@ -64,11 +80,13 @@ function App() {
   return (
     <>
       <Modal open={errorUpdatingPlaces} onClose={handleError}>
-        {errorUpdatingPlaces && <ErrorPage
-          title="An error occurred"
-          message={errorUpdatingPlaces.message}
-          onConfirm={handleError}
-        />}
+        {errorUpdatingPlaces && (
+          <ErrorPage
+            title="An error occurred"
+            message={errorUpdatingPlaces.message}
+            onConfirm={handleError}
+          />
+        )}
       </Modal>
       <Modal open={modalIsOpen} onClose={handleStopRemovePlace}>
         <DeleteConfirmation
