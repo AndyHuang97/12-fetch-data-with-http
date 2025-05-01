@@ -2,6 +2,7 @@
 import js from "@eslint/js"; // Provides js.configs.recommended
 import globals from "globals"; // Provides global definitions like browser globals
 import pluginReact from "eslint-plugin-react"; // Provides React-specific rules and settings
+import pluginReactHooks from "eslint-plugin-react-hooks";
 
 // --- No need to import or use defineConfig in flat config ---
 // import { defineConfig } from "eslint/config"; // REMOVE THIS LINE
@@ -52,14 +53,14 @@ export default [
     },
     plugins: { // Define the React plugins
       react: pluginReact,
-      // "react-hooks": pluginReactHooks,
+      "react-hooks": pluginReactHooks,
       // "jsx-a11y": pluginJsxA11y,
     },
     rules: {
       // 1. Spread the recommended React rules (this is where prop-types: 'warn' or 'error' comes from)
       // ...pluginReact.configs.recommended.rules,
       // 2. Spread the recommended React Hooks rules
-      // ...pluginReactHooks.configs.recommended.rules,
+      ...pluginReactHooks.configs.recommended.rules,
       // 3. Spread the recommended Accessibility rules
       // ...pluginJsxA11y.configs.recommended.rules,
 
