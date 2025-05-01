@@ -28,5 +28,6 @@ export function useFetch(fetchFunction, initialData) {
         isFetching,
         error,
         fetchedData,
+        setFetchedData
     };
 }

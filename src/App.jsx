@@ -12,14 +12,11 @@ import { useFetch } from "./hooks/useFetch.js";
 function App() {
   const selectedPlace = useRef();
 
-
-
   const [errorUpdatingPlaces, setErrorUpdatingPlaces] = useState();
-
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const { isFetching, error, fetchedData: userPlaces, setFetchedData: setUserPlaces } =
+    useFetch(fetchUserPlaces, []);
 
-  const {isFetching, error, fetchedData: userPlaces} = useFetch(fetchUserPlaces, []);
-  
   function handleStartRemovePlace(place) {
     setModalIsOpen(true);
     selectedPlace.current = place;
@@ -29,7 +26,7 @@ function App() {
     setModalIsOpen(false);
   }
 
-  async function handleSelectPlace(selectedPlace) {
+  async function handleSelectPlace(selectedPlace,) {
     // optimistic update avoids spinners (loading state)
     setUserPlaces((prevPickedPlaces) => {
       if (!prevPickedPlaces) {
@@ -74,7 +71,7 @@ function App() {
 
       setModalIsOpen(false);
     },
-    [userPlaces]
+    [userPlaces, setUserPlaces]
   );
 
   function handleError() {
