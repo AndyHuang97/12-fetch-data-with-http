@@ -25,18 +25,13 @@ export default [
         },
       },
     },
+    ...js.configs.recommended
     // Include recommended rules from @eslint/js
     // This is the equivalent of the old `extends: ["eslint:recommended"]` or `extends: ["js/recommended"]`
     // We merge the rules object provided by js.configs.recommended into our current config object's rules.
-    rules: {
-      ...js.configs.recommended.rules,
-
-      // Disable prop type validation
-      "react/prop-types": "off",
-
-      // Enforce self-closing tags where possible
-      "react/self-closing-comp": "warn",
-    },
+    // rules: {
+    //   ...js.configs.recommended.rules
+    // },
     // If @eslint/js registered a plugin implicitly, it's handled.
     // If you had other JS-specific plugins (not covered by the object), you'd add them here:
     // plugins: { myJsPlugin },
@@ -48,7 +43,37 @@ export default [
   // settings (like react version), rules, and parser options for JSX.
   pluginReact.configs.flat.recommended,
   pluginReact.configs.flat['jsx-runtime'], // Add this if you are using React 17+
+  {
+    files: ["**/*.{js,jsx}"], // Only apply React rules to these files
+    settings: {
+      react: {
+        version: "detect", // Important for React 19
+      },
+    },
+    plugins: { // Define the React plugins
+      react: pluginReact,
+      // "react-hooks": pluginReactHooks,
+      // "jsx-a11y": pluginJsxA11y,
+    },
+    rules: {
+      // 1. Spread the recommended React rules (this is where prop-types: 'warn' or 'error' comes from)
+      // ...pluginReact.configs.recommended.rules,
+      // 2. Spread the recommended React Hooks rules
+      // ...pluginReactHooks.configs.recommended.rules,
+      // 3. Spread the recommended Accessibility rules
+      // ...pluginJsxA11y.configs.recommended.rules,
 
+      // --- 4. Add your overrides *after* the recommended spreads ---
+
+      // Disable prop type validation - THIS SHOULD COME AFTER STEP 1
+      "react/prop-types": "off",
+
+      // Other custom rules or overrides
+      "react/self-closing-comp": "warn", // This can be anywhere after step 1
+
+      // Add or override any other rules you want
+    },
+  },
 
   // --- Optional: Add more configurations ---
   // Example: Ignoring files
